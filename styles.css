@@ -1,0 +1,868 @@
+:root {
+    --sidebar-w: 240px;
+    /* tuned to match reference image */
+    --left-bar-w: 56px;
+    --bg: #0b0b0c;
+    --panel: #0f1113;
+    --muted: #9aa0a6;
+    --accent: #ff6b6b;
+}
+
+html,
+body {
+    height: 100%
+}
+
+body {
+    background: linear-gradient(180deg, #090909 0%, #0f1113 100%);
+    color: #e9ecef;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+}
+
+/* Sidebar vertical bar - replaces floating hamburger position */
+.left_side {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--left-bar-w);
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 6px;
+    z-index: 1200;
+    box-shadow: 6px 0 18px rgba(0, 0, 0, 0.28);
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.logo-wrap {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 28px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.sidebar-hamburger {
+    background: transparent;
+    border: 0;
+    color: #111;
+    width: 32px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.bars {
+    display: inline-block;
+    width: 20px;
+    height: 16px;
+}
+
+.bars span {
+    display: block;
+    height: 2px;
+    background: #111;
+    margin: 3px 0;
+    border-radius: 2px;
+    transition: transform .18s ease, opacity .18s ease;
+}
+
+.sidebar-hamburger[aria-expanded="true"] .bars span:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+}
+
+.sidebar-hamburger[aria-expanded="true"] .bars span:nth-child(2) {
+    opacity: 0;
+}
+
+.sidebar-hamburger[aria-expanded="true"] .bars span:nth-child(3) {
+    transform: translateY(-5px) rotate(-45deg);
+}
+
+.sidebar-hamburger:active {
+    transform: scale(.98);
+}
+
+.bottom-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #111;
+    font-size: 18px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: 0;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.icon-btn svg {
+    display: block;
+}
+
+/* vertical close button inside the white left bar */
+.close-vertical {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px) scale(.98);
+    top: 50%;
+    background: transparent;
+    border: 0;
+    font-size: 28px;
+    line-height: 1;
+    color: #111;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 1210;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease, transform .22s cubic-bezier(.2, .9, .2, 1);
+}
+
+/* animate the hamburger opacity too */
+.sidebar-hamburger {
+    transition: opacity .18s ease, transform .12s ease;
+}
+
+/* when sidebar is open show vertical close and hide top hamburger (smoothly) */
+body.sidebar-open .close-vertical {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+body.sidebar-open .sidebar-hamburger {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(.98);
+}
+
+.sidebar {
+    position: fixed;
+    left: var(--left-bar-w);
+    top: 0;
+    bottom: 0;
+    width: var(--sidebar-w);
+    transform: translateX(-110%);
+    transition: transform .28s cubic-bezier(.25, .9, .2, 1);
+    z-index: 1090;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar .sidebar-inner {
+    height: 100%;
+    background: linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(10, 10, 10, 0.98));
+    border-left: 1px solid rgba(255, 255, 255, 0.03);
+    color: #fff;
+    box-shadow: 12px 0 30px rgba(0, 0, 0, 0.6);
+    position: relative;
+    /* so footer can be absolutely positioned */
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1080;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+}
+
+.overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+main.blur {
+    filter: blur(4px) saturate(.9);
+    transform: scale(.998);
+    transition: all .2s;
+}
+
+#menuList {
+    margin-top: 6px;
+    padding-inline-start: 0;
+}
+
+.menu-item {
+    opacity: 0;
+    transform: translateX(-18px) translateZ(0);
+    transition-property: transform, opacity;
+    transition-duration: .62s;
+    transition-timing-function: cubic-bezier(.2, .9, .2, 1);
+    margin: 12px 0;
+}
+
+.menu-item.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: .7rem .8rem;
+    color: var(--muted);
+    text-decoration: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.menu-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateX(6px);
+}
+
+.menu-icon {
+    flex: 0 0 18px;
+    display: block;
+    margin-inline-start: 6px;
+}
+
+/* Sidebar footer (socials + copyright) */
+.sidebar-footer {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    right: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.footer-socials {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.footer-copy {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Categories grid styles */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 28px 34px;
+    align-items: center;
+    justify-items: center;
+    padding: 18px 6px 56px 6px;
+}
+
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    width: 120px;
+}
+
+.cat-wrap {
+    width: 110px;
+    height: 110px;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    display: block;
+}
+
+.cat-img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    display: block;
+}
+
+.cat-overlay {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 14px;
+    background: rgba(0, 0, 0, 0.62);
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform .60s cubic-bezier(.2, .8, .2, 1), opacity .36s ease;
+    border-radius: inherit;
+}
+
+.cat-overlay-text {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: left;
+    padding: 6px 12px;
+    line-height: 1.05;
+}
+
+.category-card:hover .cat-overlay,
+.cat-wrap:focus .cat-overlay {
+    transform: translateY(0%);
+    opacity: 1;
+}
+
+.category-card:hover .cat-img {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.65);
+}
+
+.cat-title {
+    color: #e6edf0;
+    font-size: 14px;
+    text-align: center;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Meal card overlay effect (applies to any meal image card) */
+.meal-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.meal-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: transform .32s cubic-bezier(.2, .9, .2, 1);
+}
+
+.meal-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    pointer-events: none;
+    padding-left: 14px;
+    background: rgba(255, 255, 255, 0.62);
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform .60s cubic-bezier(.2, .8, .2, 1), opacity .36s ease;
+    border-radius: inherit;
+}
+
+.meal-overlay .card-meal-title {
+    width: 100%;
+    text-align: left;
+    padding: 18px 12px;
+    box-sizing: border-box;
+    background: transparent;
+    color: #000000;
+    font-weight: 700;
+    font-size: 18px;
+    transform: translateY(6%);
+    opacity: 0;
+    transition: transform .42s cubic-bezier(.2, .9, .2, 1), opacity .28s ease;
+}
+
+.meal-card:hover img,
+.meal-card:focus-within img {
+    transform: translateY(-6px) scale(1.02);
+}
+
+.meal-card:hover .meal-overlay,
+.meal-card:focus-within .meal-overlay {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.meal-card:hover .card-meal-title,
+.meal-card:focus-within .card-meal-title {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Ensure keyboard users can see the overlay when card receives focus */
+.meal-card:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+/* larger tile variants for grid bottom images (if needed) */
+.category-large {
+    grid-column: span 2;
+    width: 100%;
+}
+
+#mealsGrid {
+    margin-top: 6px;
+}
+
+.card.meal {
+    background: transparent;
+    border: 0;
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+}
+
+.card.meal img {
+    width: 100%;
+    height: 170px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    transition: transform .25s ease;
+}
+
+.card.meal:hover img {
+    transform: scale(1.06);
+}
+
+/* Note: overlay transition missing and will be added later */
+.card-meal-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.6) 100%);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.card-meal-title {
+    color: black;
+    font-weight: 700;
+    text-align: center;
+}
+
+.modal-content {
+    background: linear-gradient(180deg, #0d0d0d, #0b0b0c);
+    border: 0;
+    color: #e9ecef;
+}
+
+#modalWrapper .modal-dialog {
+    max-width: 980px;
+}
+
+.modal-content {
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.meal-modal-img {
+    width: 320px;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+.modal-text-col {
+    color: #e6e6e6;
+}
+
+.modal-text-col {
+    color: #e6e6e6;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.modal-text-col p {
+    margin-bottom: 8px;
+    color: #d8d8d8;
+    font-size: 13px;
+}
+
+#mealInstructions {
+    font-size: 13px;
+}
+
+/* Recipe pill badges (inline) */
+.recipes-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.recipe-pill {
+    background: rgba(200, 240, 250, 0.95);
+    color: #062028;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-block;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+/* Make the Recipes heading stand out a bit */
+.modal-text-col h6+.recipes-pills {
+    margin-top: 8px;
+}
+
+/* Slightly reduce header sizes to match the reference */
+.modal-text-col h6 {
+    font-size: 16px;
+}
+
+/* Areas grid - icon above label layout */
+.areas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 36px 48px;
+    align-items: start;
+    justify-items: center;
+    padding: 18px 6px 40px 6px;
+}
+
+.area-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    max-width: 160px;
+    text-align: center;
+}
+
+.area-card:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.06);
+    outline-offset: 4px;
+}
+
+.area-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border-radius: 50%;
+}
+
+.area-icon svg {
+    display: block;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
+}
+
+.area-label {
+    color: #fff;
+    font-weight: 700;
+    margin-top: 4px;
+    font-size: 14px;
+}
+
+.area-card:hover .area-icon {
+    transform: translateY(-6px);
+    transition: transform .24s ease;
+}
+
+.area-card:active .area-icon {
+    transform: translateY(-2px) scale(.98);
+}
+
+@media(min-width:1200px) {
+
+    /* use 5 columns on large screens for denser layout as requested */
+    .areas-grid {
+        gap: 40px 64px;
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* area image sizing */
+.area-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+    display: block;
+}
+
+.area-svg svg {
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
+}
+
+.modal-text-col h6 {
+    color: #fff;
+    font-weight: 800;
+    margin-top: 12px;
+}
+
+.modal-body {
+    padding: 12px 6px 18px 6px;
+}
+
+#mealIngredientsList {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 18px 0;
+    text-align: center;
+}
+
+#mealIngredientsList li {
+    margin: 6px 0;
+    color: #d0d0d0;
+}
+
+#mealIngredientsList li::before {
+    content: '•';
+    color: #d0d0d0;
+    display: inline-block;
+    width: 1em;
+    margin-left: 0.6rem;
+    margin-right: 0.6rem;
+}
+
+.modal-header {
+    border: 0;
+    padding-bottom: 6px;
+}
+
+.modal-header .btn-close {
+    filter: brightness(1.4);
+}
+
+/* Buttons area alignment to match reference */
+#mealSource .btn,
+#mealYoutube .btn {
+    box-shadow: none;
+}
+
+#mealSource {
+    margin-left: 12px;
+}
+
+
+/* Modal body styling to match reference image */
+.modal-body {
+    color: #e9ecef;
+}
+
+.modal-body h6 {
+    font-weight: 800;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.modal-body p,
+.modal-body ul {
+    color: #dcdcdc;
+}
+
+.modal-body #mealInstructions {
+    text-align: justify;
+    line-height: 1.45;
+}
+
+.modal-body #mealIngredientsList {
+    list-style: none;
+    padding: 0;
+    margin: 6px 0 18px 0;
+    text-align: center;
+}
+
+.modal-body #mealIngredientsList li {
+    display: block;
+    margin: 6px 0;
+    position: relative;
+    padding-left: 0;
+}
+
+.modal-body #mealIngredientsList li::before {
+    content: '•';
+    color: #dcdcdc;
+    display: inline-block;
+    width: 1em;
+    margin-left: 0.4rem;
+    margin-right: 0.6rem;
+}
+
+/* Make the modal title stand out */
+.modal-header .modal-title {
+    font-weight: 800;
+    color: #fff;
+}
+
+/* Buttons for source/youtube inside modal to look like small badges */
+#mealSource a.btn,
+#mealYoutube a.btn {
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Ensure image in modal keeps border-radius and fixed size */
+#mealImg {
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Center content column vertically when image is present */
+.modal-body .row.align-items-start {
+    align-items: flex-start;
+}
+
+/* reduce link default color inside modal */
+.modal-body a.text-info {
+    color: #9ad1e6;
+    text-decoration: none;
+}
+
+@media(max-width:767px) {
+    :root {
+        --sidebar-w: 300px;
+    }
+
+    .card.meal img {
+        height: 150px;
+    }
+}
+
+.logo {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+/* Search inputs style to match reference image */
+#controlsArea .form-control {
+    background: rgba(255, 255, 255, 0.02);
+    /* very dark translucent */
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #e6edf0;
+    border-radius: 6px;
+    padding: .45rem .7rem;
+    height: 36px;
+    box-shadow: none;
+    transition: border-color .12s ease, box-shadow .12s ease, transform .06s ease;
+}
+
+#controlsArea .form-control::placeholder {
+    color: #a9b1b6;
+    opacity: 1;
+}
+
+#controlsArea .form-control:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.02);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+/* make the two inputs line up nicely and look inset on dark page */
+#controlsArea .row {
+    margin-top: 8px;
+}
+
+/* Ingredients grid (match Areas visual layout) */
+.ingredients-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 28px 36px;
+    align-items: start;
+    justify-items: center;
+    padding: 18px 6px 40px 6px;
+}
+
+.ingredient-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    max-width: 220px;
+    text-align: center;
+}
+
+.ingredient-card:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.06);
+    outline-offset: 4px;
+}
+
+.ingredient-img {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+    display: block;
+}
+
+.ingredient-svg svg {
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.6));
+}
+
+.ingredient-title {
+    color: #fff;
+    font-weight: 800;
+    margin-top: 6px;
+    font-size: 15px;
+}
+
+.ingredient-desc {
+    color: #cfd6d9;
+    font-size: 12px;
+    line-height: 1.25;
+    max-height: 3.6em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ingredient-card:hover .ingredient-img {
+    transform: translateY(-6px);
+    transition: transform .24s ease;
+}
+
+.ingredient-card:active .ingredient-img {
+    transform: translateY(-2px) scale(.98);
+}
+
+
+
+/* reset button for ingredients/areas to match look */
+.controls-reset-btn {
+    display: inline-block;
+    margin-bottom: 12px;
+}
